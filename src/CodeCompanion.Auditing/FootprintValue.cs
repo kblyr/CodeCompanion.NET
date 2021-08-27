@@ -7,7 +7,7 @@ namespace CodeCompanion.Auditing
         public readonly bool IsOneTime;
         public readonly bool IsCached;
 
-        public FootprintValue(string name, object value, bool isOneTime, bool isCached)
+        public FootprintValue(string name, object value, bool isOneTime = false, bool isCached = false)
         {
             Name = name;
             Value = value;
@@ -15,6 +15,6 @@ namespace CodeCompanion.Auditing
             IsCached = isCached;
         }
 
-        public static FootprintValue Create(string name, object value) => new(name, value, false, false);
+        public static FootprintValue Create(string name, object value) => new(name, value);
     }
 }
