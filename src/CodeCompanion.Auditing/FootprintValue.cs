@@ -14,7 +14,7 @@ namespace CodeCompanion.Auditing
             IsOneTime = isOneTime;
             IsCached = isCached;
         }
+
+        public static FootprintValue Create(string name, object value) => new(name, value, false, false);
     }
-
-
 }
