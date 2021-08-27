@@ -10,10 +10,10 @@ namespace CodeCompanion.Auditing
         object Get(string name);
         void Remove(string name);
         void Clear();
-        Task SetAsync(FootprintValue value, CancellationToken cancellationToken = default);
-        Task SetASync(string name, object value, CancellationToken cancellationToken = default);
-        Task<object> GetAsync(string name, CancellationToken cancellationToken = default);
-        Task RemoveAsync(string name, CancellationToken cancellationToken = default);
-        Task ClearAsync(CancellationToken cancellationToken = default);
+        ValueTask SetAsync(FootprintValue value, CancellationToken cancellationToken = default);
+        ValueTask SetASync(string name, object value, CancellationToken cancellationToken = default);
+        ValueTask<object> GetAsync(string name, CancellationToken cancellationToken = default);
+        ValueTask RemoveAsync(string name, CancellationToken cancellationToken = default);
+        ValueTask ClearAsync(CancellationToken cancellationToken = default);
     }
 }

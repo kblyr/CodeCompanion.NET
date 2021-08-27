@@ -17,10 +17,10 @@ namespace CodeCompanion.Auditing
 
         public void Clear() => InternalClear();
 
-        public Task ClearAsync(CancellationToken cancellationToken = default)
+        public ValueTask ClearAsync(CancellationToken cancellationToken = default)
         {
             InternalClear();
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         public object Get(string name)
@@ -29,10 +29,10 @@ namespace CodeCompanion.Auditing
             return InternalGet(name);
         }
 
-        public Task<object> GetAsync(string name, CancellationToken cancellationToken = default) 
+        public ValueTask<object> GetAsync(string name, CancellationToken cancellationToken = default) 
         {
             _validator.ValidateName(name);
-            return Task.FromResult(InternalGet(name));
+            return ValueTask.FromResult(InternalGet(name));
         }
 
         public void Remove(string name)
@@ -41,11 +41,11 @@ namespace CodeCompanion.Auditing
             InternalRemove(name);
         }
 
-        public Task RemoveAsync(string name, CancellationToken cancellationToken = default)
+        public ValueTask RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
             _validator.ValidateName(name);
             InternalRemove(name);
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         public void Set(FootprintValue value)
@@ -60,18 +60,18 @@ namespace CodeCompanion.Auditing
             InternalSet(name, value);
         }
 
-        public Task SetAsync(FootprintValue value, CancellationToken cancellationToken = default)
+        public ValueTask SetAsync(FootprintValue value, CancellationToken cancellationToken = default)
         {
             _validator.ValidateName(value.Name);
             InternalSet(value);
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public Task SetASync(string name, object value, CancellationToken cancellationToken = default)
+        public ValueTask SetASync(string name, object value, CancellationToken cancellationToken = default)
         {
             _validator.ValidateName(name);
             InternalSet(name, value);
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
         private void InternalClear()
