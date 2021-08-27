@@ -131,7 +131,7 @@ namespace CodeCompanion.Auditing
                 }
                 else
                 {
-                    _source.Add(name, new FootprintValue(name, value, false));
+                    _source.Add(name, new FootprintValue(name, value, false, false));
                 }
             }
         }
