@@ -1,15 +1,19 @@
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace CodeCompanion.Auditing
 {
     public interface IFootprint
     {
-        object this[string name] { get; set; }
-        void Clear();
-        void Add(string name, object value);
-        void Update(string name, object value);
+        void Set(FootprintValue value);
+        void Set(string name, object value);
+        object Get(string name);
         void Remove(string name);
-        bool TryAdd(string name, object value);
-        bool TryUpdate(string name, object value);
-        bool TryRemove(string name);
-        bool TryGet(string name, out object value);
+        void Clear();
+        ValueTask SetAsync(FootprintValue value, CancellationToken cancellationToken = default);
+        ValueTask SetASync(string name, object value, CancellationToken cancellationToken = default);
+        ValueTask<object> GetAsync(string name, CancellationToken cancellationToken = default);
+        ValueTask RemoveAsync(string name, CancellationToken cancellationToken = default);
+        ValueTask ClearAsync(CancellationToken cancellationToken = default);
     }
 }

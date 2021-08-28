@@ -1,59 +1,139 @@
-using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CodeCompanion.Auditing
 {
-    public class Footprint : IFootprint
+    internal sealed class Footprint : IFootprint
     {
-        public object this[string name]
+        private readonly object _lock = new();
+        private readonly Dictionary<string, FootprintValue> _source = new();
+        private readonly IFootprintValidator _validator;
+
+        public Footprint(IFootprintValidator validator)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            _validator = validator;
         }
 
-        public void Add(string name, object value)
+        public void Clear() => InternalClear();
+
+        public ValueTask ClearAsync(CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            InternalClear();
+            return ValueTask.CompletedTask;
         }
 
-        public void Clear()
+        public object Get(string name)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(name);
+            return InternalGet(name);
+        }
+
+        public ValueTask<object> GetAsync(string name, CancellationToken cancellationToken = default) 
+        {
+            _validator.ValidateName(name);
+            return ValueTask.FromResult(InternalGet(name));
         }
 
         public void Remove(string name)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(name);
+            InternalRemove(name);
         }
 
-        public bool TryAdd(string name, object value)
+        public ValueTask RemoveAsync(string name, CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(name);
+            InternalRemove(name);
+            return ValueTask.CompletedTask;
         }
 
-        public bool TryGet(string name, out object value)
+        public void Set(FootprintValue value)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(value.Name);
+            InternalSet(value);
         }
 
-        public bool TryRemove(string name)
+        public void Set(string name, object value)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(name);
+            InternalSet(name, value);
         }
 
-        public bool TryUpdate(string name, object value)
+        public ValueTask SetAsync(FootprintValue value, CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(value.Name);
+            InternalSet(value);
+            return ValueTask.CompletedTask;
         }
 
-        public void Update(string name, object value)
+        public ValueTask SetASync(string name, object value, CancellationToken cancellationToken = default)
         {
-            throw new System.NotImplementedException();
+            _validator.ValidateName(name);
+            InternalSet(name, value);
+            return ValueTask.CompletedTask;
+        }
+
+        private void InternalClear()
+        {
+            lock (_lock)
+            {
+                _source.Clear();
+            }
+        }
+
+        private object InternalGet(string name)
+        {
+            lock (_lock)
+            {
+                if (_source.ContainsKey(name))
+                {
+                    var footprintValue = _source[name];
+
+                    if (footprintValue.IsOneTime)
+                        _source.Remove(footprintValue.Name);
+
+                    return footprintValue.Value;
+                }
+
+                return null;
+            }
+        }
+
+        private void InternalRemove(string name)
+        {
+            lock (_lock)
+            {
+                if (_source.ContainsKey(name))
+                    _source.Remove(name);
+            }
+        }
+
+        private void InternalSet(FootprintValue value)
+        {
+            lock (_lock)
+            {
+                if (_source.ContainsKey(value.Name))
+                    _source[value.Name] = value;
+                else
+                    _source.Add(value.Name, value);
+            }
+        }
+
+        private void InternalSet(string name, object value)
+        {
+            lock (_lock)
+            {
+                if (_source.ContainsKey(name))
+                {
+                    var footprintValue = _source[name];
+                    _source[name] = footprintValue.Copy(value);
+                }
+                else
+                {
+                    _source.Add(name, FootprintValue.Create(name, value));
+                }
+            }
         }
     }
 }
