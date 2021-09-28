@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>CodeCompanion.Extensions.Dapper.Postgres</PackageId>
+    <Version>1.0.0-pre</Version>
+    <Description>
+      This library currently only provides ability to query refcursors, this imitates the QueryMultiple, since PostgreSQL don't support multiple result set, we're using the Refcursor feature of the database.
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Npgsql" Version="5.0.10" />
+  </ItemGroup>
+
+</Project>
